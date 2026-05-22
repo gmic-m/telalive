@@ -738,8 +738,18 @@ a{color:inherit}
 
   .phone-3d{
     width:280px;height:560px;
-    transform:perspective(1000px) rotateX(0deg) rotateY(0deg);
+    max-width:calc(100vw - 48px);
+    transform:none !important;
+    transition:none;
+    cursor:default;
+    pointer-events:auto;
   }
+  .phone-frame{
+    width:280px;
+    max-width:calc(100vw - 48px);
+  }
+  .screen{border-radius:36px}
+  .screen-blobs{border-radius:36px}
   .screen-content{padding:46px 0 0}
   .dialpad-wrap{padding:0 12px 28px}
 
@@ -749,7 +759,12 @@ a{color:inherit}
     margin:32px auto 0;
     gap:20px;
     order:3;
+    width:100%;
     max-width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    overflow:hidden;
   }
   .steps-timeline{
     padding:0 24px 48px;
@@ -1101,10 +1116,13 @@ a{color:inherit}
       if (!dragging) return;
       dragging = false;
       phone.style.transition = 'transform 0.6s cubic-bezier(.22,1,.36,1)';
-      restRotX = isNarrow() ? 0 : 8;
-      restRotY = isNarrow() ? 0 : -10;
-      rotX = restRotX; rotY = restRotY;
-      apply();
+      if (window.innerWidth <= 768){
+        phone.style.transform = 'none';
+        rotX = 0; rotY = 0;
+      } else {
+        rotX = 8; rotY = -10;
+        phone.style.transform = `perspective(1000px) rotateX(8deg) rotateY(-10deg)`;
+      }
     };
     phone.addEventListener('touchend', onTouchEnd);
     phone.addEventListener('touchcancel', onTouchEnd);
