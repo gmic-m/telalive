@@ -702,17 +702,21 @@ a{color:inherit}
 }
 @media (max-width: 768px){
   .hero{
-    min-height:auto;
+    min-height:unset;
+    height:auto;
     padding:32px 24px 40px;
     display:flex;flex-direction:column;align-items:stretch;
     gap:24px;
     text-align:center;
+    overflow:hidden;
   }
   .hero-topleft{
     position:static;
     max-width:100%;
     text-align:center;
     order:1;
+    padding-top:80px;
+    margin-bottom:24px;
   }
   .brand-name{font-size:clamp(36px, 10vw, 56px)}
   .hero-divider{margin:14px auto}
@@ -726,6 +730,10 @@ a{color:inherit}
     position:static;
     align-items:center;
     order:2;
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    margin-bottom:24px;
   }
   .phone-pill-top{
     width:100%;justify-content:center;
@@ -738,25 +746,36 @@ a{color:inherit}
   .hero-bc{order:6;display:flex;justify-content:center;margin-top:6px}
 
   .phone-3d{
-    width:280px;height:560px;
-    max-width:calc(100vw - 48px);
+    width:100%;
+    max-width:280px;
+    height:auto;
+    aspect-ratio:9 / 18;
     transform:none !important;
     transition:none;
     cursor:default;
     pointer-events:auto;
   }
   .phone-frame{
-    width:280px;
-    max-width:calc(100vw - 48px);
+    width:100%;
+    max-width:280px;
+    height:auto;
+    aspect-ratio:9 / 18;
+    overflow:hidden;
+    border-radius:44px;
   }
-  .screen{border-radius:36px}
-  .screen-blobs{border-radius:36px}
+  .screen{
+    overflow:hidden;
+    border-radius:38px;
+  }
+  .screen-blobs{border-radius:38px}
   .screen-content{padding:46px 0 0}
   .dialpad-wrap{padding:0 12px 28px}
 
   .phone-and-steps{
-    position:static;
-    transform:none;
+    position:static !important;
+    transform:none !important;
+    top:auto !important;
+    left:auto !important;
     margin:32px auto 0;
     gap:20px;
     order:3;
@@ -766,6 +785,15 @@ a{color:inherit}
     flex-direction:column;
     align-items:center;
     overflow:hidden;
+  }
+  .phone-glow{
+    position:absolute;
+    width:300px;
+    height:300px;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    pointer-events:none;
   }
   .steps-timeline{
     padding:0 24px 48px;
@@ -1075,6 +1103,7 @@ a{color:inherit}
     };
 
     phone.addEventListener('mousedown', (e) => {
+      if (window.innerWidth <= 768) return; // skip all drag transform on mobile
       dragging = true;
       lastX = e.clientX; lastY = e.clientY;
       phone.style.cursor = 'grabbing';
@@ -1114,16 +1143,12 @@ a{color:inherit}
       lastX = t.clientX; lastY = t.clientY;
     }, { passive: true });
     const onTouchEnd = () => {
+      if (window.innerWidth <= 768) return; // skip all drag transform on mobile
       if (!dragging) return;
       dragging = false;
       phone.style.transition = 'transform 0.6s cubic-bezier(.22,1,.36,1)';
-      if (window.innerWidth <= 768){
-        phone.style.transform = 'none';
-        rotX = 0; rotY = 0;
-      } else {
-        rotX = 8; rotY = -10;
-        phone.style.transform = `perspective(1000px) rotateX(8deg) rotateY(-10deg)`;
-      }
+      rotX = 8; rotY = -10;
+      phone.style.transform = `perspective(1000px) rotateX(8deg) rotateY(-10deg)`;
     };
     phone.addEventListener('touchend', onTouchEnd);
     phone.addEventListener('touchcancel', onTouchEnd);
